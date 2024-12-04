@@ -1,4 +1,4 @@
-from utils.utils import freq_analysis
+from collections import Counter
 
 l1 = []
 l2 = []
@@ -16,13 +16,8 @@ with open(INPUT_FILE) as f:
 total_sum = 0
 for x, y in zip(sorted(l1), sorted(l2)):
     total_sum += abs(x - y)
-print(total_sum)
+print(f"Part1: {total_sum}")
 
 # part2
-total_sim = 0
-freq_l2 = freq_analysis(l2)
-for x in l1:
-    if x not in l2:
-        continue
-    total_sim += freq_l2[x] * x
-print(total_sim)
+freq_l2 = Counter(l2)
+print(f"Part2: {sum([freq_l2[x]*x for x in l1])}")

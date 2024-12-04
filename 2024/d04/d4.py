@@ -1,5 +1,6 @@
 import re
-import itertools
+
+from utils.utils import MatrixOperations, matrix_to_string
 
 
 def transpose(matrix):
@@ -40,40 +41,6 @@ def check_diagonals(matrix):
                     total_count += len(re.findall(r"XMAS", content))
     return total_count
 
-
-def generate_possibilities(original_string):
-    replacement_chars = "XMAS"
-
-    dot_indices = [i for i, char in enumerate(original_string) if char == '.']
-
-    combinations = itertools.product(replacement_chars, repeat=len(dot_indices))
-
-    possible_strings = []
-    for combo in combinations:
-        temp_list = list(original_string)
-        for index, replacement in zip(dot_indices, combo):
-            temp_list[index] = replacement
-        possible_strings.append("".join(temp_list))
-
-    return possible_strings
-
-def get_window(i, j, matrix):
-    content = ""
-    for i1 in range(i, i+3):
-        for j1 in range(j, j+3):
-            content += matrix[i1][j1]
-    return content
-
-def get_sliding_windows_of_3x3(matrix):
-    list_of_contents = []
-    for i in range(len(matrix)):
-        for j in range(len(matrix[0])):
-            if i+2 < len(matrix) and j+2 < len(matrix[0]):
-                list_of_contents.append(get_window(i, j, matrix))
-    return list_of_contents
-
-
-
 INPUT_FILE = "input.txt"
 SAMPLE_INPUT = "sample_input.txt"
 
@@ -88,7 +55,8 @@ M.S     M.M     S.M     S.S
 M.S     S.S     S.M     M.M
 """
 patterns = ["M.S.A.M.S", "M.M.A.S.S", "S.M.A.S.M", "S.S.A.M.M"]
-possiblities = [p for pattern in patterns for p in generate_possibilities(pattern)]
-b = get_sliding_windows_of_3x3(m)
-part2 = [x for x in b if x in possiblities]
+
+m_ops = MatrixOperations(matrix=m)
+b = [matrix_to_string(window) for window in m_ops.get_sliding_windows_m_by_n(m=3, n=3)]
+part2 = [x for x in b if bool(re.fullmatch(r"|".join(patterns), x))]
 print(f"Part2: {len(part2)}")
