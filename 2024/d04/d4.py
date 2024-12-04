@@ -1,4 +1,5 @@
 import re
+import itertools
 
 
 def transpose(matrix):
@@ -40,32 +41,13 @@ def check_diagonals(matrix):
     return total_count
 
 
-INPUT_FILE = "input.txt"
-SAMPLE_INPUT = "sample_input.txt"
-
-matrix = None
-with open(INPUT_FILE) as f:
-    matrix = [list(line.strip()) for line in f]
-    row = check_row(matrix)
-    col = check_verticals(matrix)
-    diag = check_diagonals(matrix)
-    part1 = row + col + diag
-    print(row, col, diag, f"Part1: {part1}")
-
-
 def generate_possibilities(original_string):
-    import itertools
-
-    # Original string with placeholders
     replacement_chars = "XMAS"
 
-    # Find the indices of '.' in the original string
     dot_indices = [i for i, char in enumerate(original_string) if char == '.']
 
-    # Create all possible combinations of characters to replace the dots
     combinations = itertools.product(replacement_chars, repeat=len(dot_indices))
 
-    # Generate all possible strings
     possible_strings = []
     for combo in combinations:
         temp_list = list(original_string)
@@ -82,22 +64,31 @@ def get_window(i, j, matrix):
             content += matrix[i1][j1]
     return content
 
-def sliding_window_of_3(matrix):
+def get_sliding_windows_of_3x3(matrix):
     list_of_contents = []
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):
             if i+2 < len(matrix) and j+2 < len(matrix[0]):
                 list_of_contents.append(get_window(i, j, matrix))
     return list_of_contents
+
+
+
+INPUT_FILE = "input.txt"
+SAMPLE_INPUT = "sample_input.txt"
+
+with open(INPUT_FILE) as f:
+    m = [list(line.strip()) for line in f]
+    part1 = check_row(m) + check_verticals(m) + check_diagonals(m)
+    print(f"Part1: {part1}")
+
 """
 M.S     M.M     S.M     S.S
 .A.     .A.     .A.     .A.
 M.S     S.S     S.M     M.M
 """
-
-a = (generate_possibilities("M.S.A.M.S") + generate_possibilities("M.M.A.S.S")
-     + generate_possibilities("S.M.A.S.M") + generate_possibilities("S.S.A.M.M"))
-
-b = sliding_window_of_3(matrix)
-part2 = [x for x in b if x in a]
-print(len(a), len(b), f"Part2: {len(part2)}")
+patterns = ["M.S.A.M.S", "M.M.A.S.S", "S.M.A.S.M", "S.S.A.M.M"]
+possiblities = [p for pattern in patterns for p in generate_possibilities(pattern)]
+b = get_sliding_windows_of_3x3(m)
+part2 = [x for x in b if x in possiblities]
+print(f"Part2: {len(part2)}")
