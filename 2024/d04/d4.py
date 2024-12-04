@@ -10,8 +10,7 @@ def check_row(matrix):
     total_count = 0
     for row in matrix:
         content = "".join(row)
-        total_count += len(re.findall(r"XMAS", content))
-        total_count += len(re.findall(r"SAMX", content))
+        total_count += len(re.findall(r"XMAS|SAMX", content))
     return total_count
 
 def check_verticals(matrix):
