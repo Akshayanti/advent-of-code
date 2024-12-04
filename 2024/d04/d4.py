@@ -10,11 +10,9 @@ def check_row(matrix):
     total_count = 0
     for row in matrix:
         content = "".join(row)
-        total_count += len(re.findall(r"XMAS|SAMX", content))
+        total_count += len(re.findall(r"XMAS", content))
+        total_count += len(re.findall(r"SAMX", content))
     return total_count
-
-def check_verticals(matrix):
-    return check_row(transpose(matrix))
 
 def check_diagonals(matrix):
     total_count = 0
@@ -45,7 +43,7 @@ SAMPLE_INPUT = "sample_input.txt"
 
 with open(INPUT_FILE) as f:
     m = [list(line.strip()) for line in f]
-    part1 = check_row(m) + check_verticals(m) + check_diagonals(m)
+    part1 = check_row(m) + check_row(transpose(m)) + check_diagonals(m)
     print(f"Part1: {part1}")
 
 """

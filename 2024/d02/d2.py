@@ -24,5 +24,5 @@ with open(INPUT_FILE) as f:
         part1_total += part1(nums)
         part2_total += part2(nums)
 
-print(part1_total)
-print(part2_total)
+print(f"Part1: {part1_total}")
+print(f"Part2: {part2_total}")

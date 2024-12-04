@@ -10,7 +10,7 @@ with open(input_file, "r") as f:
     part1 = 0
     for nums in numbers:
         part1 += int(nums[0]) * int(nums[1])
-    print(part1)
+    print(f"Part1: {part1}")
 
 
 # part2
@@ -32,4 +32,4 @@ with open(input_file, "r") as f:
     part2 = 0
     for nums in mul_numbers:
         part2 += int(nums[0]) * int(nums[1])
-    print(part2)
+    print(f"Part2: {part2}")
