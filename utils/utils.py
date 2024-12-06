@@ -24,3 +24,22 @@ class MatrixOperations:
     def pretty_print(self):
         for row in self.matrix:
             print(' '.join(row))
+
+    def find_index(self, item):
+        for i, row in enumerate(self.matrix):
+            if item in row:
+                return tuple([i, row.index(item)])
+
+    def find_all_indices(self, item):
+        indices = []
+        for i, row in enumerate(self.matrix):
+            for j, col in enumerate(row):
+                if col == item:
+                    indices.append((i, j))
+        return indices
+
+    def find_total_occurrences(self, item):
+        return sum([row.count(item) for row in self.matrix])
+
+    def deep_copy_matrix(self):
+        return [row[:] for row in self.matrix]
