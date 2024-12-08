@@ -91,11 +91,30 @@ def get_candidates(list_of_point_and_dir, given_matrix):
     return candidates
 
 
+import concurrent.futures
+
 loopitems = set()
-for i, j in tqdm.tqdm(get_candidates(way, m_ops.matrix)):
+
+import concurrent.futures, time
+
+loopitems = set()
+
+def process_candidate(candidate):
+    i, j = candidate
     new_copy = m_ops.deep_copy_matrix()
     new_copy[i][j] = "#"
     if loop_exists(init_pos, init_dir, new_copy):
-        loopitems.add((i, j))
+        return (i, j)
+    return None
 
+start_time = time.time()
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    futures = [executor.submit(process_candidate, candidate) for candidate in get_candidates(way, m_ops.matrix)]
+    for future in concurrent.futures.as_completed(futures):
+        result = future.result()
+        if result:
+            loopitems.add(result)
+
+end_time = time.time()
+print(f"Time taken: {end_time - start_time} seconds")
 print(f"Part2: {len(loopitems)}")
