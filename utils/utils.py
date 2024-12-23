@@ -62,6 +62,55 @@ class MatrixOperations:
     def deep_copy_matrix(self):
         return [row[:] for row in self.matrix]
 
+class Graph:
+    def __init__(self):
+        self.graph = {}
+
+    def add_edge(self, node1, node2):
+        if node1 not in self.graph:
+            self.graph[node1] = set()
+        if node2 not in self.graph:
+            self.graph[node2] = set()
+        self.graph[node1].add(node2)
+        self.graph[node2].add(node1)
+
+    def display_graph(self):
+        for node, neighbors in self.graph.items():
+            print(f"{node}: {', '.join(map(str, neighbors))}")
+
+    def connected_nodes(self):
+        final_res = set()
+        for node, items in self.graph.items():
+            if len(items) < 2:
+                continue
+            items = list(items)
+            for i , n1 in enumerate(items):
+                for j, n2 in enumerate(items[i+1:]):
+                    if self.is_connected(n1, [n2]) and self.is_connected(node, [n1]) and self.is_connected(node, [n2]):
+                        final_res.add(tuple(sorted([node, n1, n2])))
+        return final_res
+
+    def is_connected(self, n1, list_of_nodes):
+        if n1 in self.graph and all([n in self.graph for n in list_of_nodes]):
+            return all([n1 in self.graph[n2] for n2 in list_of_nodes] + [n2 in self.graph[n1] for n2 in list_of_nodes])
+        return False
+
+    def bron_kerbosch(self, r, p, x, cliques):
+        if not p and not x:
+            cliques.append(r)
+            return
+        for node in list(p):
+            new_r = r.union([node])
+            new_p = p.intersection(self.graph[node])
+            new_x = x.intersection(self.graph[node])
+            self.bron_kerbosch(new_r, new_p, new_x, cliques)
+            p.remove(node)
+            x.add(node)
+
+    def find_cliques(self):
+        cliques = []
+        self.bron_kerbosch(set(), set(self.graph.keys()), set(), cliques)
+        return cliques
 
 class Dijkstra:
     def __init__(self, matrix, start, end):
