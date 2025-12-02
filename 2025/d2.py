@@ -38,7 +38,7 @@ def part2(low: int, high: int) -> list:
 
 def read_input():
     list_of_ranges = []
-    with open("input.txt") as f:
+    with open("d2/input.txt") as f:
         lines = f.readlines()
         for line in lines:
             if line == "\n":
