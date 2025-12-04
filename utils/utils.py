@@ -39,9 +39,23 @@ class MatrixOperations:
                 windows.append(window)
         return windows
 
+    def get_neighbor_cells(self, posx:int, posy:int, include_diagonals: bool):
+        if posx < 0 or posx >= len(self.matrix) or posy < 0 or posy >= len(self.matrix[0]):
+            return []
+        neighbors = []
+        ref = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        if include_diagonals:
+            ref += [(-1,-1), (-1,1), (1,-1), (1,1)]
+        for dx, dy in ref:
+            nx, ny = posx + dx, posy + dy
+            if 0 <= nx < len(self.matrix) and 0 <= ny < len(self.matrix[0]):
+                neighbors.append((nx, ny))
+        return neighbors
+
     def pretty_print(self):
+        print()
         for row in self.matrix:
-            print('\t'.join(row))
+            print('\t'.join([str(x) for x in row]))
 
     def find_index(self, item):
         for i, row in enumerate(self.matrix):
