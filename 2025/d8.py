@@ -72,7 +72,7 @@ for x1 in sorted(neigbors, key=lambda x: neigbors[x]):
         for x in sorted(all_circuits, key=lambda x: len(x), reverse=True)[:3]:
             p1 *= len(x)
         print(f"P1: {p1}")
-    if len(all_circuits[0]) == max_count:
+    if len(all_circuits[0]) == total_count:
         print(f"P2: {x[0]*y[0]}, {ix-1}, {x}, {y}")
         exit(0)
     ix += 1
