@@ -1,5 +1,3 @@
-import sys
-
 # filename = "sample.txt"
 # max_count = 10
 # total_count = 20
