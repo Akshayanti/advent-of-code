@@ -80,17 +80,110 @@ class Graph:
     def __init__(self):
         self.graph = {}
 
-    def add_edge(self, node1, node2):
+    def get_node_by_val(self, name):
+        return self.graph[name]
+
+    def add_edge(self, node1, node2, bidirectional=True):
         if node1 not in self.graph:
             self.graph[node1] = set()
         if node2 not in self.graph:
             self.graph[node2] = set()
         self.graph[node1].add(node2)
-        self.graph[node2].add(node1)
+        if bidirectional:
+            self.graph[node2].add(node1)
 
     def display_graph(self):
         for node, neighbors in self.graph.items():
             print(f"{node}: {', '.join(map(str, neighbors))}")
+
+    def find_all_paths(self, node1, node2, path=None):
+        """
+        Find all paths from node1 to node2 (recursive generator).
+        Good for small graphs. For better performance, use find_all_paths_fast().
+        """
+        if path is None:
+            path = []
+
+        path = path + [node1]
+
+        if node1 == node2:
+            yield path
+            return
+
+        if node1 not in self.graph:
+            return
+
+        for node in self.graph[node1]:
+            if node not in path:
+                yield from self.find_all_paths(node, node2, path)
+
+    def find_all_paths_fast(self, start, end):
+        """
+        Fastest path-finding using iterative DFS.
+        Best for: Medium to large graphs when you need all paths at once.
+
+        Returns: List of all paths from start to end.
+        Time: O(V! × V) worst case, Space: O(V × P) where P = number of paths
+        """
+        if start == end:
+            return [[start]]
+
+        if start not in self.graph:
+            return []
+
+        all_paths = []
+        # Stack stores: (node, path_list, visited_set)
+        stack = [(start, [start], {start})]
+
+        while stack:
+            node, path, visited = stack.pop()
+
+            if node == end:
+                all_paths.append(path)
+                continue
+
+            if node not in self.graph:
+                continue
+
+            for neighbor in self.graph[node]:
+                if neighbor not in visited:
+                    stack.append((neighbor, path + [neighbor], visited | {neighbor}))
+
+        return all_paths
+
+    def find_all_paths_generator(self, start, end, path=None, visited=None):
+        """
+        Memory-efficient path finding using generator with backtracking.
+        Best for: Large graphs with many paths, when processing paths incrementally.
+
+        Usage:
+            for path in graph.find_all_paths_generator(start, end):
+                print(path)  # Process each path immediately
+
+        Yields: One path at a time
+        Memory: O(V) instead of O(V × P)
+        """
+        if path is None:
+            path = [start]
+            visited = {start}
+
+        if start == end:
+            yield path[:]  # Yield a copy
+            return
+
+        if start not in self.graph:
+            return
+
+        for neighbor in self.graph[start]:
+            if neighbor not in visited:
+                path.append(neighbor)
+                visited.add(neighbor)
+
+                yield from self.find_all_paths_generator(neighbor, end, path, visited)
+
+                # Backtrack
+                path.pop()
+                visited.remove(neighbor)
 
     def connected_nodes(self):
         final_res = set()
